@@ -2,10 +2,7 @@ package mindswap.academy.TranslatorApi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import mindswap.academy.TranslatorApi.service.TranslatorService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
 
@@ -18,8 +15,8 @@ public class TranslatorController {
         this.translatorService = translatorService;
     }
 
-    @GetMapping("/{text}")
-    public String getTranslator(@PathVariable String text) throws JsonProcessingException, URISyntaxException {
-        return translatorService.getTranslator("PT", "EN", text);
+    @PostMapping()
+    public String getTranslator(@RequestParam(name = "text") String text, @RequestParam(name = "src_lang", required = false) String sourceLanguage, @RequestParam(name = "trg_lang") String languageToTranslate) throws JsonProcessingException, URISyntaxException {
+        return translatorService.getTranslator(sourceLanguage, languageToTranslate, text);
     }
 }
