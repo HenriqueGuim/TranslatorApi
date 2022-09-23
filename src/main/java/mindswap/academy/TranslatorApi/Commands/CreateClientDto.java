@@ -7,7 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 
-import static mindswap.academy.TranslatorApi.Commands.Util.*;
+import static mindswap.academy.TranslatorApi.utils.UtilStrings.*;
 
 @Data
 @Builder
