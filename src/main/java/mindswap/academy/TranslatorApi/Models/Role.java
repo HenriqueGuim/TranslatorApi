@@ -11,4 +11,8 @@ public class Role {
 
     private Long id;
     private String typeRole;
+
+    public Role(String typeRole) {
+        this.typeRole = typeRole;
+    }
 }

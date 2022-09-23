@@ -4,7 +4,7 @@ import mindswap.academy.TranslatorApi.Models.Client;
 
 public class ClientConverter {
 
-    public Client convertToEntity(CreateClientDto createClientDto){
+    public static Client convertToEntity(CreateClientDto createClientDto){
         return Client.builder()
                 .id(createClientDto.getId())
                 .name(createClientDto.getName())
