@@ -23,11 +23,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class TranslatorService {
 
 
-    private final String translatorApiAddress = "https://api-free.deepl.com/v2/translate";
-    private final String translatorApiKey = "0914e154-53d3-a0b8-1587-8152fd90b0b5:fx";
-    private final String SCHEME = "https";
-    private final String AUTHORITY = "api-free.deepl.com";
-    private final String PATH = "/v2/translate";
+    @Value("${jwt.deepl.address}")
+    private String translatorApiAddress;
+    @Value("${jwt.deepl.key}")
+    private String translatorApiKey;
     private final RestTemplate restTemplate = new RestTemplate();
 
 

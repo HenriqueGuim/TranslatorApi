@@ -1,6 +1,6 @@
-package mindswap.academy.TranslatorApi.Commands;
+package mindswap.academy.TranslatorApi.utils;
 
-public class Util {
+public class UtilStrings {
 
     public static final String BLANK = "This should not be blank.";
     public static final String NULL = "This should be null.";
