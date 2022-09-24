@@ -44,4 +44,9 @@ public enum Languages {
     public String getLanguageCode() {
         return languageCode;
     }
+
+    @Override
+    public String toString() {
+        return languageCode;
+    }
 }

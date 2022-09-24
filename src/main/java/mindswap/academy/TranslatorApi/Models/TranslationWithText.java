@@ -1,5 +1,6 @@
 package mindswap.academy.TranslatorApi.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 
@@ -7,11 +8,11 @@ import mindswap.academy.TranslatorApi.utils.enums.Languages;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class TranslationWithText {
 
     private Languages sourceLanguage;
     private Languages finalLanguage;
     private String text;
+    @JsonIgnore
     private Client client;
 }

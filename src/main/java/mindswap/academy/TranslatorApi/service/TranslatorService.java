@@ -69,9 +69,9 @@ public class TranslatorService {
         Languages targetLanguage = Arrays.stream(Languages.values())
                                       .filter(lang -> lang.getLanguageCode().equals(trgLanguage)).findFirst().get();
 
-        client.addTranslation(srcLanguage, targetLanguage);
+        clientService.addTranslation(srcLanguage, targetLanguage, client);
 
-        client.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, text, client));
+        clientService.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, translation.asText(),client), client);
 
         return "Translated from " + Verifiers.getLanguage(language.asText()) + " to " + Verifiers.getLanguage(trgLanguage) + " : " + translation.asText();
     }
