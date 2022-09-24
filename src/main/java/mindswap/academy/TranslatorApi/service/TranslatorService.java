@@ -9,6 +9,7 @@ import mindswap.academy.TranslatorApi.utils.Verifiers;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriUtils;
@@ -16,8 +17,10 @@ import org.springframework.web.util.UriUtils;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.Executors.newCachedThreadPool;
 
 @Service
 public class TranslatorService {
@@ -30,6 +33,7 @@ public class TranslatorService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     private final ClientService clientService;
+    private ExecutorService executorService = newCachedThreadPool();
 
     public TranslatorService(ClientService clientService) {
         this.clientService = clientService;
@@ -62,17 +66,47 @@ public class TranslatorService {
         JsonNode translation = root.path("translations").get(0).path("text");
         JsonNode language = root.path("translations").get(0).path("detected_source_language");
 
-        Client client = clientService.getClientByUsername(username);
+        executorService.submit(new SaveTranslation(username, language.asText(), trgLanguage, translation.asText()));
 
-        Languages srcLanguage = Arrays.stream(Languages.values())
-                                      .filter(lang -> lang.getLanguageCode().equals(language.asText())).findFirst().get();
-        Languages targetLanguage = Arrays.stream(Languages.values())
-                                      .filter(lang -> lang.getLanguageCode().equals(trgLanguage)).findFirst().get();
-
-        clientService.addTranslation(srcLanguage, targetLanguage, client);
-
-        clientService.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, translation.asText(),client), client);
 
         return "Translated from " + Verifiers.getLanguage(language.asText()) + " to " + Verifiers.getLanguage(trgLanguage) + " : " + translation.asText();
+    }
+
+    public class SaveTranslation implements Runnable {
+        private final String username;
+        private final String sourceLanguage;
+        private final String finalLanguage;
+        private final String text;
+
+        public SaveTranslation(String username, String sourceLanguage, String finalLanguage, String text) {
+            this.username = username;
+            this.sourceLanguage = sourceLanguage;
+            this.finalLanguage = finalLanguage;
+            this.text = text;
+        }
+
+        @Override
+        public void run() {
+            try {
+                saveTranslations(username,sourceLanguage,finalLanguage,text);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void saveTranslations(String username, String sourceLanguage, String trgLanguage, String translation) throws InterruptedException {
+            Client client = clientService.getClientByUsername(username);
+
+            Languages srcLanguage = Arrays.stream(Languages.values())
+                    .filter(lang -> lang.getLanguageCode().equals(sourceLanguage)).findFirst().get();
+            Languages targetLanguage = Arrays.stream(Languages.values())
+                    .filter(lang -> lang.getLanguageCode().equals(trgLanguage)).findFirst().get();
+
+            clientService.addTranslation(srcLanguage, targetLanguage, client);
+
+            clientService.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, translation,client), client);
+
+        }
+
     }
 }
