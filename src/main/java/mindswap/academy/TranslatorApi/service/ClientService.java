@@ -19,4 +19,9 @@ public class ClientService {
     public boolean addClient(Client client) {
         return clientRepository.addClient(client.addRole(roleService.get("FREE")));
     }
+
+
+    public Client getClientByUsername(String username) {
+        return clientRepository.getClientByUsername(username);
+    }
 }

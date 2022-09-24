@@ -3,20 +3,19 @@ package mindswap.academy.TranslatorApi.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.models.parameters.QueryParameter;
+import mindswap.academy.TranslatorApi.Models.Client;
+import mindswap.academy.TranslatorApi.Models.TranslationWithText;
 import mindswap.academy.TranslatorApi.utils.Verifiers;
+import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.DefaultUriBuilderFactory;
-import org.springframework.web.util.UriBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -30,9 +29,14 @@ public class TranslatorService {
     private String translatorApiKey;
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private final ClientService clientService;
+
+    public TranslatorService(ClientService clientService) {
+        this.clientService = clientService;
+    }
 
 
-    public String getTranslator(String sourceLanguage, String trgLanguage, String text) throws JsonProcessingException, URISyntaxException {
+    public String getTranslator(String sourceLanguage, String trgLanguage, String text, String username) throws JsonProcessingException, URISyntaxException {
         if (!Verifiers.isLanguageSupported(trgLanguage)){
             return null;
         }
@@ -58,6 +62,16 @@ public class TranslatorService {
         JsonNode translation = root.path("translations").get(0).path("text");
         JsonNode language = root.path("translations").get(0).path("detected_source_language");
 
+        Client client = clientService.getClientByUsername(username);
+
+        Languages srcLanguage = Arrays.stream(Languages.values())
+                                      .filter(lang -> lang.getLanguageCode().equals(language.asText())).findFirst().get();
+        Languages targetLanguage = Arrays.stream(Languages.values())
+                                      .filter(lang -> lang.getLanguageCode().equals(trgLanguage)).findFirst().get();
+
+        client.addTranslation(srcLanguage, targetLanguage);
+
+        client.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, text, client));
 
         return "Translated from " + Verifiers.getLanguage(language.asText()) + " to " + Verifiers.getLanguage(trgLanguage) + " : " + translation.asText();
     }

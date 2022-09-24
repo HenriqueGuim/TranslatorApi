@@ -23,9 +23,8 @@ public class TranslatorController {
 
     @PostMapping()
     public ResponseEntity<?> getTranslator(@RequestParam(name = "text") String text, @RequestParam(name = "src_lang", required = false) String sourceLanguage, @RequestParam(name = "trg_lang") String languageToTranslate) throws JsonProcessingException, URISyntaxException {
-        String translation = translatorService.getTranslator(sourceLanguage, languageToTranslate, text);
+        String translation = translatorService.getTranslator(sourceLanguage, languageToTranslate, text, "zpatins");
         if (translation == null){
-            String message = "Language not supported";
             Map<String, String> response = new HashMap<>();
             response.put("error", "Language not supported");
 
