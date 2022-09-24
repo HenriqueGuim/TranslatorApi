@@ -19,4 +19,8 @@ public class ClientRepository{
     public boolean addClient(Client client) {
        return this.clientList.add(client);
     }
+
+    public Client getClientByUsername(String username){
+        return clientList.stream().filter(client1 -> client1.getUsername().equals(username)).findFirst().orElse(null);
+    }
 }
