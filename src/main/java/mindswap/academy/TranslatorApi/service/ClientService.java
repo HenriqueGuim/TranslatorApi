@@ -2,7 +2,7 @@ package mindswap.academy.TranslatorApi.service;
 
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
-import mindswap.academy.TranslatorApi.Repository.ClientRepository;
+import mindswap.academy.TranslatorApi.Repository.ClientRepositoryJpa;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.springframework.stereotype.Service;
 
@@ -11,30 +11,30 @@ import java.util.*;
 @Service
 public class ClientService {
 
-    private final ClientRepository clientRepository;
+    private final ClientRepositoryJpa clientRepositoryJpa;
     private final RoleService roleService;
 
-    public ClientService(ClientRepository clientRepository, RoleService roleService) {
-        this.clientRepository = clientRepository;
+    public ClientService(ClientRepositoryJpa clientRepositoryJpa, RoleService roleService) {
+        this.clientRepositoryJpa = clientRepositoryJpa;
         this.roleService = roleService;
     }
 
 
     public boolean addClient(Client client) {
-        return clientRepository.addClient(client.addRole(roleService.get("FREE")));
+        return clientRepositoryJpa.addClient(client.addRole(roleService.get("FREE")));
     }
 
 
     public Client getClientByUsername(String username) {
-        return clientRepository.getClientByUsername(username);
+        return clientRepositoryJpa.getClientByUsername(username);
     }
 
     public Set<Client> getAllClients() {
-        return clientRepository.getClientList();
+        return clientRepositoryJpa.getClientList();
     }
 
     public Client getClientById(Long id) {
-        return clientRepository.getClientList().stream().filter(client -> client.getId().equals(id)).findFirst().orElse(null);
+        return clientRepositoryJpa.getClientList().stream().filter(client -> client.getId().equals(id)).findFirst().orElse(null);
     }
 
     public Map<Languages, Map<Languages,Long>> addTranslation(Languages srcLang, Languages trgLang, Client client) {

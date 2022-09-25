@@ -2,7 +2,6 @@ package mindswap.academy.TranslatorApi.service;
 
 import mindswap.academy.TranslatorApi.Commands.ClientConverter;
 import mindswap.academy.TranslatorApi.Commands.CreateClientDto;
-import mindswap.academy.TranslatorApi.Repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
 @Service

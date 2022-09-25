@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public class RoleRepository {
+public class RoleRepositoryJpa {
 
     private List<Role> roles = new ArrayList<>(Arrays.asList(
             new Role("FREE"),
