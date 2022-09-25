@@ -72,41 +72,42 @@ public class TranslatorService {
         return "Translated from " + Verifiers.getLanguage(language.asText()) + " to " + Verifiers.getLanguage(trgLanguage) + " : " + translation.asText();
     }
 
-    public class SaveTranslation implements Runnable {
-        private final String username;
-        private final String sourceLanguage;
-        private final String finalLanguage;
-        private final String text;
-
-        public SaveTranslation(String username, String sourceLanguage, String finalLanguage, String text) {
-            this.username = username;
-            this.sourceLanguage = sourceLanguage;
-            this.finalLanguage = finalLanguage;
-            this.text = text;
-        }
-
-        @Override
-        public void run() {
-            try {
-                saveTranslations(username,sourceLanguage,finalLanguage,text);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         private void saveTranslations(String username, String sourceLanguage, String trgLanguage, String translation) throws InterruptedException {
             Client client = clientService.getClientByUsername(username);
 
             Languages srcLanguage = Arrays.stream(Languages.values())
-                    .filter(lang -> lang.getLanguageCode().equals(sourceLanguage)).findFirst().get();
+                                    .filter(lang -> lang.getLanguageCode().equals(sourceLanguage)).findFirst().get();
+
             Languages targetLanguage = Arrays.stream(Languages.values())
-                    .filter(lang -> lang.getLanguageCode().equals(trgLanguage)).findFirst().get();
+                                       .filter(lang -> lang.getLanguageCode().equals(trgLanguage)).findFirst().get();
 
             clientService.addTranslation(srcLanguage, targetLanguage, client);
 
-            clientService.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, translation,client), client);
+            clientService.addTranslationWithText(new TranslationWithText(srcLanguage, targetLanguage, translation, client), client);
 
         }
+
+        public class SaveTranslation implements Runnable {
+            private final String username;
+            private final String sourceLanguage;
+            private final String finalLanguage;
+            private final String text;
+
+            public SaveTranslation(String username, String sourceLanguage, String finalLanguage, String text) {
+                this.username = username;
+                this.sourceLanguage = sourceLanguage;
+                this.finalLanguage = finalLanguage;
+                this.text = text;
+            }
+
+            @Override
+            public void run() {
+                try {
+                    saveTranslations(username,sourceLanguage,finalLanguage,text);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
     }
 }

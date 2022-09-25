@@ -1,6 +1,7 @@
 package mindswap.academy.TranslatorApi.service;
 
 import mindswap.academy.TranslatorApi.Models.Client;
+import mindswap.academy.TranslatorApi.Models.Translation;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
 import mindswap.academy.TranslatorApi.Repository.ClientRepository;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
@@ -37,24 +38,19 @@ public class ClientService {
         return clientRepository.getClientList().stream().filter(client -> client.getId().equals(id)).findFirst().orElse(null);
     }
 
-    public Map<Languages, Map<Languages,Long>> addTranslation(Languages srcLang, Languages trgLang, Client client) {
-        Map<Languages, Map<Languages, Long>> translations = client.getTranslations();
+    public List<Translation> addTranslation(Languages srcLang, Languages trgLang, Client client) {
+        List<Translation> translations = client.getTranslations();
+        Translation temp = new Translation(srcLang, trgLang,1L);
 
-        if(translations.containsKey(srcLang) && translations.get(srcLang).containsKey(trgLang)){
-            Long counter = translations.get(srcLang).get(trgLang);
-            counter++;
-            translations.get(srcLang).put(trgLang,counter);
-            return translations;
-        }
-        if(translations.containsKey(srcLang) && !translations.get(srcLang).containsKey(trgLang)){
-            translations.get(srcLang).put(trgLang,1L);
-            return translations;
+        for(Translation t : translations){
+            if(t.equals(temp)){
+                Long counter = t.getCount()+1;
+                t.setCount(counter);
+                return translations;
+            }
         }
 
-        Map<Languages, Long> map = new HashMap<>();
-        map.put(trgLang,1L);
-        translations.put(srcLang, new HashMap<>(map));
-
+        translations.add(temp);
         return translations;
     }
 
