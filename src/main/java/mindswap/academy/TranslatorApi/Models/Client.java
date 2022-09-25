@@ -17,7 +17,7 @@ public class Client {
     private String password;
     private String email;
     private List<Role> roles = new ArrayList<>();
-    private Map<Languages, Map<Languages, Long>> translations = new HashMap<>();
+    private List<Translation> translations = new ArrayList<>();
     private Queue<TranslationWithText> translationsWithText = new LinkedList<>();
 
     public Client(Long id, String name, String username, String password, String email) {
