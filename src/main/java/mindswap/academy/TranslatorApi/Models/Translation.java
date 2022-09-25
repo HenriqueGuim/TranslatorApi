@@ -1,6 +1,7 @@
 package mindswap.academy.TranslatorApi.Models;
 
 import lombok.*;
+import mindswap.academy.TranslatorApi.utils.enums.Languages;
 
 @Data
 @Builder
@@ -9,8 +10,7 @@ import lombok.*;
 @ToString
 public class Translation {
 
-    private Long id;
-    private String sourceLanguage;
-    private String finalLanguage;
-    private Client client;
+    private Languages sourceLanguage;
+    private Languages finalLanguage;
+    private int count;
 }
