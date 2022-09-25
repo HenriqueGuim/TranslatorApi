@@ -18,7 +18,7 @@ public class ConsultingService {
 
 
     public Map<Languages,Long> getAllSrcLanguages() {
-        Set<Client> clientList = clientService.getAllClients();
+        List<Client> clientList = clientService.getAllClients();
         Map<Languages, Long> srcLanguages = new HashMap<>();
         Arrays.stream(Languages.values()).forEach(languages -> srcLanguages.put(languages, 0L));
 
@@ -37,7 +37,7 @@ public class ConsultingService {
     }
 
     public Map<Languages, Long> getAllTrgLanguages() {
-        Set<Client> clientList = clientService.getAllClients();
+        List<Client> clientList = clientService.getAllClients();
         Map<Languages, Long> trgLanguages = new HashMap<>();
         Arrays.stream(Languages.values()).forEach(languages -> trgLanguages.put(languages, 0L));
 

@@ -104,7 +104,7 @@ public class TranslatorService {
 
             clientService.addTranslation(srcLanguage, targetLanguage, client);
 
-            clientService.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, translation,client), client);
+            clientService.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, translation), client);
 
         }
 
