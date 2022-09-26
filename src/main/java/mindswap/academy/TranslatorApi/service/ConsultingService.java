@@ -56,7 +56,7 @@ public class ConsultingService {
 
     public Map<Languages, Long> getSrcLangClientTranslations(HttpServletRequest request) {
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
-        String usernameFromToken = jwt.getClaim("username").asString();
+        String usernameFromToken = jwt.getSubject();
         Client client = clientService.getClientByUsername(usernameFromToken);
 
         if (client == null) {
@@ -79,7 +79,7 @@ public class ConsultingService {
 
     public Map<Languages, Long> getTrgLangClientTranslations(HttpServletRequest request) {
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
-        String usernameFromToken = jwt.getClaim("username").asString();
+        String usernameFromToken = jwt.getSubject();
         Client client = clientService.getClientByUsername(usernameFromToken);
 
         if (client == null) {
@@ -96,7 +96,7 @@ public class ConsultingService {
 
     public Queue<TranslationWithText> getLastTranslations(HttpServletRequest request) {
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
-        String usernameFromToken = jwt.getClaim("username").asString();
+        String usernameFromToken = jwt.getSubject();
         Client client = clientService.getClientByUsername(usernameFromToken);
 
         return client.getTranslationsWithText();
