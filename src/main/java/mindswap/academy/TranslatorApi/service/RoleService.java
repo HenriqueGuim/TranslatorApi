@@ -21,6 +21,12 @@ public class RoleService {
 
         return roleList.stream().filter(role1 -> role1.getTypeRole().equals(role)).findFirst().orElse(null);
     }
+
+    public Role getById(Long id) {
+        List<Role> roleList = roleRepository.findAll();
+
+        return roleList.stream().filter(role1 -> role1.getId().equals(id)).findFirst().orElse(null);
+    }
     public void createRole(Role role){
         roleRepository.save(role);
 

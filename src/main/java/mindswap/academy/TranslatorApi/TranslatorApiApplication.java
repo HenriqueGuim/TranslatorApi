@@ -42,16 +42,15 @@ public class TranslatorApiApplication {
 	}
 
 
+	/*
 	@PostConstruct
 	public void addClient(){
 		roleService.createRole(new Role("ROLE_FREE"));
 		roleService.createRole(new Role("ROLE_PREMIUM"));
 		roleService.createRole(new Role("ROLE_ADMIN"));
 
-
-
 		//clientService.addClient(new Client(1L,"Henrique","zpatins", "1234", "asda"));
-
 	}
+	 */
 
 }

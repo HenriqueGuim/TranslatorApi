@@ -117,4 +117,13 @@ public class ClientService implements UserDetailsService {
     }
 
 
+    public Object updateRole(String username, Long role) {
+        Client client = clientRepository.findByUsername(username);
+        if (client == null) {
+            return "User not found";
+        }
+        client.setRole(roleService.getById(role));
+        clientRepository.save(client);
+        return "Role updated";
+    }
 }
