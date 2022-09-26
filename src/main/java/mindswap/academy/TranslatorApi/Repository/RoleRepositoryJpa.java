@@ -10,3 +10,4 @@ import javax.persistence.Entity;
 public interface RoleRepositoryJpa extends JpaRepository<Role, Long> {
     Role findRoleByTypeRole(String role);
 }
+

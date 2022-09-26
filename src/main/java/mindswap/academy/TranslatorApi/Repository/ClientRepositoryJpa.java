@@ -8,3 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface ClientRepositoryJpa extends JpaRepository<Client, Long> {
     Client getClientByUsername(String username);
 }
+

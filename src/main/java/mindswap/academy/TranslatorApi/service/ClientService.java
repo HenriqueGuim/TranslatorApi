@@ -11,6 +11,7 @@ import java.util.*;
 @Service
 public class ClientService {
 
+
     private final ClientRepositoryJpa clientRepository;
     private final RoleService roleService;
 
@@ -21,6 +22,7 @@ public class ClientService {
 
 
     public boolean addClient(Client client) {
+
         client.setRole(roleService.get("ROLE_FREE"));
         Client client1 =clientRepository.save(client);
         return client1 != null;
@@ -28,8 +30,9 @@ public class ClientService {
 
 
     public Client getClientByUsername(String username) {
-        return clientRepository.getClientByUsername(username);
+        return clientRepositoryJpa.getClientByUsername(username);
     }
+
 
     public List<Client> getAllClients() {
         return clientRepository.findAll();
@@ -37,6 +40,7 @@ public class ClientService {
 
     public Client getClientById(Long id) {
         return clientRepository.findAll().stream().filter(client -> client.getId().equals(id)).findFirst().orElse(null);
+
     }
 
     public HashMap<Languages, HashMap<Languages,Long>> addTranslation(Languages srcLang, Languages trgLang, Client client) {
