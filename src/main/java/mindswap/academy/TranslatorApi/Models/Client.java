@@ -26,8 +26,6 @@ public class Client {
     private Role role;
     @Column(columnDefinition = "longblob")
     private byte[] translations = SerializationUtils.serialize(new HashMap<Languages,HashMap<Languages,Long>>());
-    //private Map<Languages, Map<Languages, Long>> translations = new HashMap<>();
-    //private Queue<TranslationWithText> translationsWithText = new LinkedList<>();
     @Column(columnDefinition = "longblob")
     private byte[] translationsWithText = SerializationUtils.serialize(new LinkedList<TranslationWithText>());
 

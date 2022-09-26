@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Queue;
 
@@ -42,20 +43,20 @@ public class ConsultingController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("premium/{id}/SrcLanguage")
+    @GetMapping("premium/SrcLanguage")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PREMIUM')")
-    public ResponseEntity<?> getSrcLangClientTranslations(@PathVariable(name = "id") Long id) {
-        Map<Languages,Long> map = consultingService.getSrcLangClientTranslations(id);
+    public ResponseEntity<?> getSrcLangClientTranslations(HttpServletRequest request) {
+        Map<Languages,Long> map = consultingService.getSrcLangClientTranslations(request);
         if(map != null) {
             return ResponseEntity.ok().body(map);
         }
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("premium/{id}/TrgLanguage")
+    @GetMapping("premium/TrgLanguage")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PREMIUM')")
-    public ResponseEntity<?> getTrgLangClientTranslations(@PathVariable(name = "id") Long id) {
-        Map<Languages,Long> map = consultingService.getTrgLangClientTranslations(id);
+    public ResponseEntity<?> getTrgLangClientTranslations(HttpServletRequest request) {
+        Map<Languages,Long> map = consultingService.getTrgLangClientTranslations(request);
 
         if(map != null) {
             return ResponseEntity.ok().body(map);
@@ -64,10 +65,10 @@ public class ConsultingController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("premium/{id}/lastTranslations")
+    @GetMapping("premium/lastTranslations")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PREMIUM')")
-    public ResponseEntity<?> getLastTranslations(@PathVariable(name = "id") Long id) {
-        Queue<TranslationWithText> queue = consultingService.getLastTranslations(id);
+    public ResponseEntity<?> getLastTranslations(HttpServletRequest request) {
+        Queue<TranslationWithText> queue = consultingService.getLastTranslations(request);
         if(queue.size() !=0) {
             return ResponseEntity.ok().body(queue);
         }

@@ -117,7 +117,7 @@ public class ClientService implements UserDetailsService {
     }
 
 
-    public Object updateRole(String username, Long role) {
+    public String updateRole(String username, Long role) {
         Client client = clientRepository.findByUsername(username);
         if (client == null) {
             return "User not found";
