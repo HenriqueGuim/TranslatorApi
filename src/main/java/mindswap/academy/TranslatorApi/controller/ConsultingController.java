@@ -74,7 +74,7 @@ public class ConsultingController {
     }
 
     @Operation(summary = SUMMARY_FIVE, description = DESCRIPTION_FIVE)
-    @GetMapping("premium/{id}/lastTranslations")
+    @GetMapping("premium/lastTranslations")
     @PreAuthorize(ADMIN_PREMIUM)
     public ResponseEntity<?> getLastTranslations(HttpServletRequest request) {
         Queue<TranslationWithText> queue = consultingService.getLastTranslations(request);

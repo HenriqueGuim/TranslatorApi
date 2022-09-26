@@ -1,0 +1,210 @@
+{
+	"info": {
+		"_postman_id": "c84d4aa5-f950-476c-9b21-e570b215fec0",
+		"name": "APITranslator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23380575"
+	},
+	"item": [
+		{
+			"name": "TranslatorAPI",
+			"item": [
+				{
+					"name": "RegisterClient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Joao Santos\",\r\n    \"username\": \"joao\",\r\n    \"password\": \"1234\",\r\n    \"email\": \"joao@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginClient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/login?username=joao&password=1234",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "joao"
+								},
+								{
+									"key": "password",
+									"value": "1234"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTranslationFree",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvIiwicm9sZSI6IlJPTEVfRlJFRSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9sb2dpbiIsImV4cCI6MTY2NDIyMTcwNX0.sACMocIR-zwSrH4C_oZ4pIF1VgGgW11KoLZICAyY_bw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/translator?text=Cadeira&src_lang=PT&trg_lang=EN",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"translator"
+							],
+							"query": [
+								{
+									"key": "text",
+									"value": "Cadeira"
+								},
+								{
+									"key": "src_lang",
+									"value": "PT"
+								},
+								{
+									"key": "trg_lang",
+									"value": "EN"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSrcLanguage",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4iLCJleHAiOjE2NjQyMjIxMzV9.ybAaXQSioG2TjpNZ2WbtemzYWESoGM3cfk63c_sC1p8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/consult/admin/SrcLanguage",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"consult",
+								"admin",
+								"SrcLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTrgLanguage",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4iLCJleHAiOjE2NjQyMjIxMzV9.ybAaXQSioG2TjpNZ2WbtemzYWESoGM3cfk63c_sC1p8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/consult/admin/TrgLanguage",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"consult",
+								"admin",
+								"TrgLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RefreshToken",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4iLCJleHAiOjE2NjQyMjIxMzV9.ybAaXQSioG2TjpNZ2WbtemzYWESoGM3cfk63c_sC1p8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/refresh",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllTextTranslations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvcmVmcmVzaCIsImV4cCI6MTY2NDIyMjM3NH0.R_TTQVR8h3zKVvojKf7WPtR8BhXc9ifFGv7Q2DjxiEc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/consult/premium/lastTranslations",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"consult",
+								"premium",
+								"lastTranslations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
