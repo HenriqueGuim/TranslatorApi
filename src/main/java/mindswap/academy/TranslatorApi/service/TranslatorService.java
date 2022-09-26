@@ -70,7 +70,7 @@ public class TranslatorService {
         JsonNode language = root.path("translations").get(0).path("detected_source_language");
 
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
-        String usernameFromToken = jwt.getClaim("username").asString();
+        String usernameFromToken = jwt.getSubject();
         Client client = clientService.getClientByUsername(usernameFromToken);
 
         executorService.submit(new SaveTranslation(client, language.asText(), trgLanguage, translation.asText()));
