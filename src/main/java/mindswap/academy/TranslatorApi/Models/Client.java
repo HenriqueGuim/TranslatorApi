@@ -1,10 +1,8 @@
 package mindswap.academy.TranslatorApi.Models;
 
-import io.swagger.v3.core.util.Json;
 import lombok.*;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.apache.commons.lang3.SerializationUtils;
-import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.util.*;

@@ -1,7 +1,6 @@
 package mindswap.academy.TranslatorApi.service;
 
 import mindswap.academy.TranslatorApi.Models.Role;
-import mindswap.academy.TranslatorApi.Repository.RoleRepository;
 import mindswap.academy.TranslatorApi.Repository.RoleRepositoryJpa;
 import org.springframework.stereotype.Service;
 
@@ -21,5 +20,9 @@ public class RoleService {
     public void createRole(Role role){
         roleRepository.save(role);
 
+    }
+
+    public void save(Role role) {
+        roleRepository.save(role);
     }
 }

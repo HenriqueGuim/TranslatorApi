@@ -25,12 +25,13 @@ public class ClientService {
 
         client.setRole(roleService.get("ROLE_FREE"));
         Client client1 =clientRepository.save(client);
+        roleService.save(client1.getRole());
         return client1 != null;
     }
 
 
     public Client getClientByUsername(String username) {
-        return clientRepositoryJpa.getClientByUsername(username);
+        return clientRepository.getClientByUsername(username);
     }
 
 
