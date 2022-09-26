@@ -1,5 +1,9 @@
 package mindswap.academy.TranslatorApi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import mindswap.academy.TranslatorApi.Commands.CreateClientDto;
 import mindswap.academy.TranslatorApi.service.RegisterService;
 import mindswap.academy.TranslatorApi.utils.Verifiers;
@@ -13,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static mindswap.academy.TranslatorApi.utils.UtilStrings.*;
+
 
 @RestController
 @RequestMapping("/register")
@@ -24,6 +30,8 @@ public class RegisterController {
         this.registerService = registerService;
     }
 
+    @Operation(summary = SUMMARY_EIGHT, description = DESCRIPTION_SEVEN)
+    @ApiResponse(responseCode = "200", content = @Content(schema =@Schema(implementation = CreateClientDto.class)))
     @PostMapping
     public ResponseEntity<?> clientRegister(@Valid @RequestBody CreateClientDto createClientDto, BindingResult result){
 
