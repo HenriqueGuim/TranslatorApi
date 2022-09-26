@@ -12,6 +12,8 @@ import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.PostConstruct;
 import java.util.LinkedList;
@@ -19,12 +21,12 @@ import java.util.LinkedList;
 @SpringBootApplication
 public class TranslatorApiApplication {
 
-	private final ClientService clientService;
+	//private final ClientService clientService;
 	private final ClientRepositoryJpa clientRepository;
 	private final RoleService roleService;
 
-	public TranslatorApiApplication(ClientService clientService, ClientRepositoryJpa clientRepository, RoleService roleService) {
-		this.clientService = clientService;
+	public TranslatorApiApplication(ClientRepositoryJpa clientRepository, RoleService roleService) {
+		//this.clientService = clientService;
 		this.clientRepository = clientRepository;
 		this.roleService = roleService;
 	}
@@ -34,6 +36,12 @@ public class TranslatorApiApplication {
 		SpringApplication.run(TranslatorApiApplication.class, args);
 	}
 
+	@Bean
+	BCryptPasswordEncoder bCryptPasswordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
+
+
 	@PostConstruct
 	public void addClient(){
 		roleService.createRole(new Role("ROLE_FREE"));
@@ -42,7 +50,7 @@ public class TranslatorApiApplication {
 
 
 
-		clientService.addClient(new Client(1L,"Henrique","zpatins", "1234", "asda"));
+		//clientService.addClient(new Client(1L,"Henrique","zpatins", "1234", "asda"));
 
 	}
 

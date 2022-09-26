@@ -24,4 +24,5 @@ public class CreateClientDto {
     @Email(message = VALID)
     private String email;
 
+
 }
