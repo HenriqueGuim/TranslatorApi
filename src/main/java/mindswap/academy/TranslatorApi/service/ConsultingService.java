@@ -1,10 +1,13 @@
 package mindswap.academy.TranslatorApi.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -51,8 +54,11 @@ public class ConsultingService {
         return trgLanguages;
     }
 
-    public Map<Languages, Long> getSrcLangClientTranslations(Long id) {
-        Client client = clientService.getClientById(id);
+    public Map<Languages, Long> getSrcLangClientTranslations(HttpServletRequest request) {
+        DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
+        String usernameFromToken = jwt.getClaim("username").asString();
+        Client client = clientService.getClientByUsername(usernameFromToken);
+
         if (client == null) {
             return null;
         }
@@ -71,8 +77,11 @@ public class ConsultingService {
         return map;
     }
 
-    public Map<Languages, Long> getTrgLangClientTranslations(Long id) {
-        Client client = clientService.getClientById(id);
+    public Map<Languages, Long> getTrgLangClientTranslations(HttpServletRequest request) {
+        DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
+        String usernameFromToken = jwt.getClaim("username").asString();
+        Client client = clientService.getClientByUsername(usernameFromToken);
+
         if (client == null) {
             return null;
         }
@@ -85,7 +94,11 @@ public class ConsultingService {
         return map;
     }
 
-    public Queue<TranslationWithText> getLastTranslations(Long id) {
-        return clientService.getClientById(id).getTranslationsWithText();
+    public Queue<TranslationWithText> getLastTranslations(HttpServletRequest request) {
+        DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
+        String usernameFromToken = jwt.getClaim("username").asString();
+        Client client = clientService.getClientByUsername(usernameFromToken);
+
+        return client.getTranslationsWithText();
     }
 }
