@@ -1,22 +1,13 @@
 package mindswap.academy.TranslatorApi.Repository;
 
 import mindswap.academy.TranslatorApi.Models.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import javax.persistence.Entity;
 
 @Repository
-public class RoleRepositoryJpa {
-
-    private List<Role> roles = new ArrayList<>(Arrays.asList(
-            new Role("FREE"),
-            new Role("ADMIN"),
-            new Role("PREMIUM")));
-
-    public Role getRole(String role){
-        return roles.stream().filter(role1 -> role1.getTypeRole().equals(role)).toList().get(0);
-    }
+public interface RoleRepositoryJpa extends JpaRepository<Role, Long> {
+    Role findRoleByTypeRole(String role);
 }
 

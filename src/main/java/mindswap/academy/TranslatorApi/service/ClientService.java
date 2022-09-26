@@ -11,17 +11,21 @@ import java.util.*;
 @Service
 public class ClientService {
 
-    private final ClientRepositoryJpa clientRepositoryJpa;
+
+    private final ClientRepositoryJpa clientRepository;
     private final RoleService roleService;
 
-    public ClientService(ClientRepositoryJpa clientRepositoryJpa, RoleService roleService) {
-        this.clientRepositoryJpa = clientRepositoryJpa;
+    public ClientService(ClientRepositoryJpa clientRepository, RoleService roleService) {
+        this.clientRepository = clientRepository;
         this.roleService = roleService;
     }
 
 
     public boolean addClient(Client client) {
-        return clientRepositoryJpa.addClient(client.addRole(roleService.get("FREE")));
+
+        client.setRole(roleService.get("ROLE_FREE"));
+        Client client1 =clientRepository.save(client);
+        return client1 != null;
     }
 
 
@@ -29,44 +33,59 @@ public class ClientService {
         return clientRepositoryJpa.getClientByUsername(username);
     }
 
-    public Set<Client> getAllClients() {
-        return clientRepositoryJpa.getClientList();
+
+    public List<Client> getAllClients() {
+        return clientRepository.findAll();
     }
 
     public Client getClientById(Long id) {
-        return clientRepositoryJpa.getClientList().stream().filter(client -> client.getId().equals(id)).findFirst().orElse(null);
+        return clientRepository.findAll().stream().filter(client -> client.getId().equals(id)).findFirst().orElse(null);
+
     }
 
-    public Map<Languages, Map<Languages,Long>> addTranslation(Languages srcLang, Languages trgLang, Client client) {
-        Map<Languages, Map<Languages, Long>> translations = client.getTranslations();
+    public HashMap<Languages, HashMap<Languages,Long>> addTranslation(Languages srcLang, Languages trgLang, Client client) {
+        HashMap<Languages, HashMap<Languages, Long>> translations = client.getTranslations();
 
         if(translations.containsKey(srcLang) && translations.get(srcLang).containsKey(trgLang)){
             Long counter = translations.get(srcLang).get(trgLang);
             counter++;
             translations.get(srcLang).put(trgLang,counter);
+            client.setTranslations(translations);
+            clientRepository.save(client);
             return translations;
         }
         if(translations.containsKey(srcLang) && !translations.get(srcLang).containsKey(trgLang)){
             translations.get(srcLang).put(trgLang,1L);
+            client.setTranslations(translations);
+            clientRepository.save(client);
+
             return translations;
         }
 
-        Map<Languages, Long> map = new HashMap<>();
+        HashMap<Languages, Long> map = new HashMap<>();
         map.put(trgLang,1L);
         translations.put(srcLang, new HashMap<>(map));
+        client.setTranslations(translations);
+        clientRepository.save(client);
+        Map<Languages, HashMap<Languages, Long>> map1 = clientRepository.getClientByUsername(client.getUsername()).getTranslations();
+        client.getTranslationsWithText();
 
         return translations;
     }
 
     public void addTranslationWithText(TranslationWithText translationWithText, Client client) {
-        Queue<TranslationWithText> translationsWithText = client.getTranslationsWithText();
+        LinkedList<TranslationWithText> translationsWithText = client.getTranslationsWithText();
 
         if(translationsWithText.size() == 5){
             translationsWithText.remove();
             translationsWithText.offer(translationWithText);
+            client.setTranslationsWithText(translationsWithText);
+            clientRepository.save(client);
             return;
         }
 
         translationsWithText.offer(translationWithText);
+        client.setTranslationsWithText(translationsWithText);
+        clientRepository.save(client);
     }
 }
