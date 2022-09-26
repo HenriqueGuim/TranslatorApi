@@ -1,5 +1,7 @@
 package mindswap.academy.TranslatorApi.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -40,7 +43,7 @@ public class TranslatorService {
     }
 
 
-    public String getTranslator(String sourceLanguage, String trgLanguage, String text, String username) throws JsonProcessingException, URISyntaxException {
+    public String getTranslator(String sourceLanguage, String trgLanguage, String text, HttpServletRequest request) throws JsonProcessingException, URISyntaxException {
         if (!Verifiers.isLanguageSupported(trgLanguage)){
             return null;
         }
@@ -66,20 +69,24 @@ public class TranslatorService {
         JsonNode translation = root.path("translations").get(0).path("text");
         JsonNode language = root.path("translations").get(0).path("detected_source_language");
 
-        executorService.submit(new SaveTranslation(username, language.asText(), trgLanguage, translation.asText()));
+        DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
+        String usernameFromToken = jwt.getClaim("username").asString();
+        Client client = clientService.getClientByUsername(usernameFromToken);
+
+        executorService.submit(new SaveTranslation(client, language.asText(), trgLanguage, translation.asText()));
 
 
         return "Translated from " + Verifiers.getLanguage(language.asText()) + " to " + Verifiers.getLanguage(trgLanguage) + " : " + translation.asText();
     }
 
     public class SaveTranslation implements Runnable {
-        private final String username;
+        private final Client client;
         private final String sourceLanguage;
         private final String finalLanguage;
         private final String text;
 
-        public SaveTranslation(String username, String sourceLanguage, String finalLanguage, String text) {
-            this.username = username;
+        public SaveTranslation(Client client, String sourceLanguage, String finalLanguage, String text) {
+            this.client = client;
             this.sourceLanguage = sourceLanguage;
             this.finalLanguage = finalLanguage;
             this.text = text;
@@ -88,14 +95,13 @@ public class TranslatorService {
         @Override
         public void run() {
             try {
-                saveTranslations(username,sourceLanguage,finalLanguage,text);
+                saveTranslations(client,sourceLanguage,finalLanguage,text);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        private void saveTranslations(String username, String sourceLanguage, String trgLanguage, String translation) throws InterruptedException {
-            Client client = clientService.getClientByUsername(username);
+        private void saveTranslations(Client client, String sourceLanguage, String trgLanguage, String translation) throws InterruptedException {
 
             Languages srcLanguage = Arrays.stream(Languages.values())
                     .filter(lang -> lang.getLanguageCode().equals(sourceLanguage)).findFirst().get();

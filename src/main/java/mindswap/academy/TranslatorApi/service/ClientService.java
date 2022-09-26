@@ -4,34 +4,47 @@ import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
 import mindswap.academy.TranslatorApi.Repository.ClientRepositoryJpa;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
-public class ClientService {
+public class ClientService implements UserDetailsService {
 
 
     private final ClientRepositoryJpa clientRepository;
     private final RoleService roleService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public ClientService(ClientRepositoryJpa clientRepository, RoleService roleService) {
+    public ClientService(ClientRepositoryJpa clientRepository, RoleService roleService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.clientRepository = clientRepository;
         this.roleService = roleService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
 
     public boolean addClient(Client client) {
+        if (clientRepository.findByUsername(client.getUsername()) != null) {
+            return false;
+        }
 
         client.setRole(roleService.get("ROLE_FREE"));
+        client.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
         Client client1 =clientRepository.save(client);
         roleService.save(client1.getRole());
-        return client1 != null;
+        return true;
     }
 
 
     public Client getClientByUsername(String username) {
-        return clientRepository.getClientByUsername(username);
+        return clientRepository.findByUsername(username);
     }
 
 
@@ -68,7 +81,7 @@ public class ClientService {
         translations.put(srcLang, new HashMap<>(map));
         client.setTranslations(translations);
         clientRepository.save(client);
-        Map<Languages, HashMap<Languages, Long>> map1 = clientRepository.getClientByUsername(client.getUsername()).getTranslations();
+        Map<Languages, HashMap<Languages, Long>> map1 = clientRepository.findByUsername(client.getUsername()).getTranslations();
         client.getTranslationsWithText();
 
         return translations;
@@ -89,4 +102,19 @@ public class ClientService {
         client.setTranslationsWithText(translationsWithText);
         clientRepository.save(client);
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Client client = clientRepository.findByUsername(username);
+        if (client == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(client.getRole().getTypeRole()));
+
+        return new User(client.getUsername(), client.getPassword(), authorities);
+    }
+
+
 }

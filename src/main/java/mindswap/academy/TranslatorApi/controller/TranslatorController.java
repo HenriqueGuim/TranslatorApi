@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +23,8 @@ public class TranslatorController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> getTranslator(@RequestParam(name = "text") String text, @RequestParam(name = "src_lang", required = false) String sourceLanguage, @RequestParam(name = "trg_lang") String languageToTranslate) throws JsonProcessingException, URISyntaxException {
-        String translation = translatorService.getTranslator(sourceLanguage, languageToTranslate, text, "zpatins");
+    public ResponseEntity<?> getTranslator(@RequestParam(name = "text") String text, @RequestParam(name = "src_lang", required = false) String sourceLanguage, @RequestParam(name = "trg_lang") String languageToTranslate, HttpServletRequest request) throws JsonProcessingException, URISyntaxException {
+        String translation = translatorService.getTranslator(sourceLanguage, languageToTranslate, text, request);
         if (translation == null){
             Map<String, String> response = new HashMap<>();
             response.put("error", "Language not supported");
