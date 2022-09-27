@@ -2,7 +2,7 @@ package mindswap.academy.TranslatorApi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
-import mindswap.academy.TranslatorApi.service.ConsultingService;
+import mindswap.academy.TranslatorApi.service.consulting.ConsultingServiceImpl;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,17 +18,17 @@ import static mindswap.academy.TranslatorApi.utils.UtilStrings.*;
 @RequestMapping("/consult")
 public class ConsultingController {
 
-    private final ConsultingService consultingService;
+    private final ConsultingServiceImpl consultingServiceImpl;
 
-    public ConsultingController(ConsultingService consultingService) {
-        this.consultingService = consultingService;
+    public ConsultingController(ConsultingServiceImpl consultingServiceImpl) {
+        this.consultingServiceImpl = consultingServiceImpl;
     }
 
     @Operation(summary = SUMMARY_ONE, description = DESCRIPTION_ONE)
     @GetMapping("/admin/SrcLanguage")
     @PreAuthorize(ADMIN)
     public ResponseEntity<?> getAllSrcLanguage() {
-        Map<Languages,Long> map = consultingService.getAllSrcLanguages();
+        Map<Languages,Long> map = consultingServiceImpl.getAllSrcLanguages();
         if (map != null) {
             return ResponseEntity.ok().body(map);
         }
@@ -40,7 +40,7 @@ public class ConsultingController {
     @GetMapping("/admin/TrgLanguage")
     @PreAuthorize(ADMIN)
     public ResponseEntity<?> getAllTrgLanguage() {
-        Map<Languages,Long> map = consultingService.getAllTrgLanguages();
+        Map<Languages,Long> map = consultingServiceImpl.getAllTrgLanguages();
         if (map != null) {
             return ResponseEntity.ok().body(map);
         }
@@ -50,10 +50,10 @@ public class ConsultingController {
 
 
     @Operation(summary = SUMMARY_THREE, description = DESCRIPTION_THREE)
-    @GetMapping("premium/{id}/SrcLanguage")
+    @GetMapping("premium/SrcLanguage")
     @PreAuthorize(ADMIN_PREMIUM)
     public ResponseEntity<?> getSrcLangClientTranslations(HttpServletRequest request) {
-        Map<Languages,Long> map = consultingService.getSrcLangClientTranslations(request);
+        Map<Languages,Long> map = consultingServiceImpl.getSrcLangClientTranslations(request);
         if(map != null) {
             return ResponseEntity.ok().body(map);
         }
@@ -64,7 +64,7 @@ public class ConsultingController {
     @GetMapping("premium/TrgLanguage")
     @PreAuthorize(ADMIN_PREMIUM)
     public ResponseEntity<?> getTrgLangClientTranslations(HttpServletRequest request) {
-        Map<Languages,Long> map = consultingService.getTrgLangClientTranslations(request);
+        Map<Languages,Long> map = consultingServiceImpl.getTrgLangClientTranslations(request);
 
         if(map != null) {
             return ResponseEntity.ok().body(map);
@@ -77,7 +77,7 @@ public class ConsultingController {
     @GetMapping("premium/lastTranslations")
     @PreAuthorize(ADMIN_PREMIUM)
     public ResponseEntity<?> getLastTranslations(HttpServletRequest request) {
-        Queue<TranslationWithText> queue = consultingService.getLastTranslations(request);
+        Queue<TranslationWithText> queue = consultingServiceImpl.getLastTranslations(request);
         if(queue.size() !=0) {
             return ResponseEntity.ok().body(queue);
         }

@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import mindswap.academy.TranslatorApi.Commands.CreateClientDto;
-import mindswap.academy.TranslatorApi.service.RegisterService;
+import mindswap.academy.TranslatorApi.service.register.RegisterServiceImpl;
 import mindswap.academy.TranslatorApi.utils.Verifiers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +24,10 @@ import static mindswap.academy.TranslatorApi.utils.UtilStrings.*;
 @RequestMapping("/register")
 public class RegisterController {
 
-    private final RegisterService registerService;
+    private final RegisterServiceImpl registerServiceImpl;
 
-    public RegisterController(RegisterService registerService){
-        this.registerService = registerService;
+    public RegisterController(RegisterServiceImpl registerServiceImpl){
+        this.registerServiceImpl = registerServiceImpl;
     }
 
     @Operation(summary = SUMMARY_EIGHT, description = DESCRIPTION_SEVEN)
@@ -39,7 +39,7 @@ public class RegisterController {
             return new ResponseEntity<>(Verifiers.getErrors(result), HttpStatus.BAD_REQUEST);
         }
 
-        boolean hasCreated = registerService.addClient(createClientDto);
+        boolean hasCreated = registerServiceImpl.addClient(createClientDto);
 
         if(hasCreated){
             return new ResponseEntity<>(HttpStatus.CREATED);

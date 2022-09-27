@@ -1,7 +1,6 @@
 package mindswap.academy.TranslatorApi.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import mindswap.academy.TranslatorApi.service.ClientService;
+import mindswap.academy.TranslatorApi.service.client.ClientServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/Admin/role")
 public class RoleController {
 
-    private final ClientService clientService;
+    private final ClientServiceImpl clientServiceImpl;
 
-    public RoleController(ClientService clientService) {
-        this.clientService = clientService;
+    public RoleController(ClientServiceImpl clientServiceImpl) {
+        this.clientServiceImpl = clientServiceImpl;
     }
 
     @PutMapping("/{role}/username/{username}")
@@ -22,6 +21,6 @@ public class RoleController {
 
 
 
-        return ResponseEntity.ok(clientService.updateRole(username, Long.parseLong(role)));
+        return ResponseEntity.ok(clientServiceImpl.updateRole(username, Long.parseLong(role)));
     }
 }

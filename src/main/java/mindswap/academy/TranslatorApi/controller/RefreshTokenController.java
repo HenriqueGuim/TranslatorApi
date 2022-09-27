@@ -1,7 +1,7 @@
 package mindswap.academy.TranslatorApi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import mindswap.academy.TranslatorApi.service.RefreshTokenService;
+import mindswap.academy.TranslatorApi.service.RefreshToken.RefreshTokenServiceImpl;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,17 +16,17 @@ import static mindswap.academy.TranslatorApi.utils.UtilStrings.SUMMARY_SIX;
 @RestController
 @RequestMapping("/refresh")
 public class RefreshTokenController {
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenServiceImpl refreshTokenServiceImpl;
 
-    public RefreshTokenController(RefreshTokenService refreshTokenService) {
-        this.refreshTokenService = refreshTokenService;
+    public RefreshTokenController(RefreshTokenServiceImpl refreshTokenServiceImpl) {
+        this.refreshTokenServiceImpl = refreshTokenServiceImpl;
     }
 
     @Operation(summary = SUMMARY_SIX, description = DESCRIPTION_SIX)
     @PostMapping
     public void refreshToken(HttpServletRequest request, HttpServletResponse response){
         try {
-            refreshTokenService.refreshToken(request, response);
+            refreshTokenServiceImpl.refreshToken(request, response);
         } catch (IOException ignored) {
         }
 

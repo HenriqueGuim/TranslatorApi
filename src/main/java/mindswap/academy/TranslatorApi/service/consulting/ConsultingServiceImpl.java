@@ -1,9 +1,10 @@
-package mindswap.academy.TranslatorApi.service;
+package mindswap.academy.TranslatorApi.service.consulting;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
+import mindswap.academy.TranslatorApi.service.client.ClientServiceImpl;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +13,17 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
-public class ConsultingService {
-    private final ClientService clientService;
+public class ConsultingServiceImpl implements ConsultingService {
+    private final ClientServiceImpl clientServiceImpl;
 
-    public ConsultingService(ClientService clientService) {
-        this.clientService = clientService;
+    public ConsultingServiceImpl(ClientServiceImpl clientServiceImpl) {
+        this.clientServiceImpl = clientServiceImpl;
     }
 
 
+    @Override
     public Map<Languages,Long> getAllSrcLanguages() {
-        List<Client> clientList = clientService.getAllClients();
+        List<Client> clientList = clientServiceImpl.getAllClients();
         Map<Languages, Long> srcLanguages = new HashMap<>();
         Arrays.stream(Languages.values()).forEach(languages -> srcLanguages.put(languages, 0L));
 
@@ -39,8 +41,9 @@ public class ConsultingService {
         return srcLanguages;
     }
 
+    @Override
     public Map<Languages, Long> getAllTrgLanguages() {
-        List<Client> clientList = clientService.getAllClients();
+        List<Client> clientList = clientServiceImpl.getAllClients();
         Map<Languages, Long> trgLanguages = new HashMap<>();
         Arrays.stream(Languages.values()).forEach(languages -> trgLanguages.put(languages, 0L));
 
@@ -54,10 +57,11 @@ public class ConsultingService {
         return trgLanguages;
     }
 
+    @Override
     public Map<Languages, Long> getSrcLangClientTranslations(HttpServletRequest request) {
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
         String usernameFromToken = jwt.getSubject();
-        Client client = clientService.getClientByUsername(usernameFromToken);
+        Client client = clientServiceImpl.getClientByUsername(usernameFromToken);
 
         if (client == null) {
             return null;
@@ -77,10 +81,11 @@ public class ConsultingService {
         return map;
     }
 
+    @Override
     public Map<Languages, Long> getTrgLangClientTranslations(HttpServletRequest request) {
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
         String usernameFromToken = jwt.getSubject();
-        Client client = clientService.getClientByUsername(usernameFromToken);
+        Client client = clientServiceImpl.getClientByUsername(usernameFromToken);
 
         if (client == null) {
             return null;
@@ -94,10 +99,11 @@ public class ConsultingService {
         return map;
     }
 
+    @Override
     public Queue<TranslationWithText> getLastTranslations(HttpServletRequest request) {
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
         String usernameFromToken = jwt.getSubject();
-        Client client = clientService.getClientByUsername(usernameFromToken);
+        Client client = clientServiceImpl.getClientByUsername(usernameFromToken);
 
         return client.getTranslationsWithText();
     }

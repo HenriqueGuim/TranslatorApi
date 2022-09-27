@@ -1,62 +1,66 @@
-package mindswap.academy.TranslatorApi.service;
+package mindswap.academy.TranslatorApi.service.client;
 
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
 import mindswap.academy.TranslatorApi.Repository.ClientRepositoryJpa;
+import mindswap.academy.TranslatorApi.service.role.RoleServiceImpl;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
-public class ClientService implements UserDetailsService {
+public class ClientServiceImpl implements ClientService {
 
 
     private final ClientRepositoryJpa clientRepository;
-    private final RoleService roleService;
+    private final RoleServiceImpl roleServiceImpl;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public ClientService(ClientRepositoryJpa clientRepository, RoleService roleService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public ClientServiceImpl(ClientRepositoryJpa clientRepository, RoleServiceImpl roleServiceImpl, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.clientRepository = clientRepository;
-        this.roleService = roleService;
+        this.roleServiceImpl = roleServiceImpl;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
 
+    @Override
     public boolean addClient(Client client) {
         if (clientRepository.findByUsername(client.getUsername()) != null) {
             return false;
         }
 
-        client.setRole(roleService.get("ROLE_FREE"));
+        client.setRole(roleServiceImpl.get("ROLE_FREE"));
         client.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
         Client client1 =clientRepository.save(client);
-        roleService.save(client1.getRole());
+        roleServiceImpl.save(client1.getRole());
         return true;
     }
 
 
+    @Override
     public Client getClientByUsername(String username) {
         return clientRepository.findByUsername(username);
     }
 
 
+    @Override
     public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
 
+    @Override
     public Client getClientById(Long id) {
         return clientRepository.findAll().stream().filter(client -> client.getId().equals(id)).findFirst().orElse(null);
 
     }
 
+    @Override
     public HashMap<Languages, HashMap<Languages,Long>> addTranslation(Languages srcLang, Languages trgLang, Client client) {
         HashMap<Languages, HashMap<Languages, Long>> translations = client.getTranslations();
 
@@ -87,6 +91,7 @@ public class ClientService implements UserDetailsService {
         return translations;
     }
 
+    @Override
     public void addTranslationWithText(TranslationWithText translationWithText, Client client) {
         LinkedList<TranslationWithText> translationsWithText = client.getTranslationsWithText();
 
@@ -117,12 +122,13 @@ public class ClientService implements UserDetailsService {
     }
 
 
+    @Override
     public String updateRole(String username, Long role) {
         Client client = clientRepository.findByUsername(username);
         if (client == null) {
             return "User not found";
         }
-        client.setRole(roleService.getById(role));
+        client.setRole(roleServiceImpl.getById(role));
         clientRepository.save(client);
         return "Role updated";
     }

@@ -1,4 +1,4 @@
-package mindswap.academy.TranslatorApi.service;
+package mindswap.academy.TranslatorApi.service.RefreshToken;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -6,10 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mindswap.academy.TranslatorApi.Models.Client;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import mindswap.academy.TranslatorApi.service.client.ClientServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,18 +14,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static com.auth0.jwt.JWT.decode;
 import static com.auth0.jwt.JWT.require;
 
 @Service
-public class RefreshTokenService {
+public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private final ClientService clientService;
+    private final ClientServiceImpl clientServiceImpl;
 
-    public RefreshTokenService(ClientService clientService) {
-        this.clientService = clientService;
+    public RefreshTokenServiceImpl(ClientServiceImpl clientServiceImpl) {
+        this.clientServiceImpl = clientServiceImpl;
     }
 
+    @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader("Authorization");
 
@@ -52,7 +49,7 @@ public class RefreshTokenService {
 
                 }
 
-                Client client = clientService.getClientByUsername(username);
+                Client client = clientServiceImpl.getClientByUsername(username);
                 String clientRole = client.getRole().getTypeRole();
 
                 String access_token = JWT.create()

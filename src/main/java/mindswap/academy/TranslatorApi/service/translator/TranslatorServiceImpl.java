@@ -1,4 +1,4 @@
-package mindswap.academy.TranslatorApi.service;
+package mindswap.academy.TranslatorApi.service.translator;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -7,11 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
+import mindswap.academy.TranslatorApi.service.client.ClientServiceImpl;
 import mindswap.academy.TranslatorApi.utils.Verifiers;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriUtils;
@@ -26,7 +26,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
 @Service
-public class TranslatorService {
+public class TranslatorServiceImpl implements TranslatorService {
 
 
     @Value("${jwt.deepl.address}")
@@ -35,14 +35,15 @@ public class TranslatorService {
     private String translatorApiKey;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final ClientService clientService;
+    private final ClientServiceImpl clientServiceImpl;
     private ExecutorService executorService = newCachedThreadPool();
 
-    public TranslatorService(ClientService clientService) {
-        this.clientService = clientService;
+    public TranslatorServiceImpl(ClientServiceImpl clientServiceImpl) {
+        this.clientServiceImpl = clientServiceImpl;
     }
 
 
+    @Override
     public String getTranslator(String sourceLanguage, String trgLanguage, String text, HttpServletRequest request) throws JsonProcessingException, URISyntaxException {
         if (!Verifiers.isLanguageSupported(trgLanguage)){
             return null;
@@ -71,7 +72,7 @@ public class TranslatorService {
 
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
         String usernameFromToken = jwt.getSubject();
-        Client client = clientService.getClientByUsername(usernameFromToken);
+        Client client = clientServiceImpl.getClientByUsername(usernameFromToken);
 
         executorService.submit(new SaveTranslation(client, language.asText(), trgLanguage, translation.asText()));
 
@@ -108,9 +109,9 @@ public class TranslatorService {
             Languages targetLanguage = Arrays.stream(Languages.values())
                     .filter(lang -> lang.getLanguageCode().equals(trgLanguage)).findFirst().get();
 
-            clientService.addTranslation(srcLanguage, targetLanguage, client);
+            clientServiceImpl.addTranslation(srcLanguage, targetLanguage, client);
 
-            clientService.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, translation), client);
+            clientServiceImpl.addTranslationWithText(new TranslationWithText(srcLanguage,targetLanguage, translation), client);
 
         }
 
