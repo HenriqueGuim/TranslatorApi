@@ -44,7 +44,7 @@ ZH - Chinese
 
 
 
-## Authores
+## Authors
 
 - Henrique Guimarães (https://github.com/HenriqueGuim)
 - João Santos (https://github.com/jpbs18)
@@ -178,3 +178,12 @@ ZH - Chinese
 
 - Authorization - Bearer Token
 
+
+## Implementations
+
+- Model Relationships
+- Spring Security
+- External API
+- Swagger
+- Postman Collection
+- GitHub
