@@ -2,6 +2,8 @@ package mindswap.academy.TranslatorApi.utils;
 
 public class UtilStrings {
 
+    public static final String NOT_FOUND = "User not found.";
+    public static final String ROLE_UPDATED = "Role was updated.";
     public static final String BLANK = "This should not be blank.";
     public static final String NULL = "This should be null.";
     public static final String VALID = "This should be a valid email.";
@@ -15,6 +17,7 @@ public class UtilStrings {
     public static final String SUMMARY_SIX = "Obtaining a refreshed token";
     public static final String SUMMARY_SEVEN = "Method to obtain a translation.";
     public static final String SUMMARY_EIGHT = "Registration for the client.";
+    public static final String SUMMARY_NINE = "Admin changes the role signature of a client.";
     public static final String DESCRIPTION_ONE = "Obtain all the languages from which we obtain translations.Only an admin has access to this information";
     public static final String DESCRIPTION_TWO = "Obtain all the languages that we translate to from all clients. Only an admin has access to this information.";
     public static final String DESCRIPTION_THREE ="Obtain all the languages from which we obtain translations, specifically for a client. Only a premium client and admin have access to this information.";
@@ -22,5 +25,6 @@ public class UtilStrings {
     public static final String DESCRIPTION_FIVE ="Obtain the last five translations from a specific premium client. Only a premium client and admin have access to this information.";
     public static final String DESCRIPTION_SIX = "Obtaining a refreshed token by giving the old one.";
     public static final String DESCRIPTION_SEVEN = "Client registration to enable translations.";
+    public static final String DESCRIPTION_NINE = "The admin can change the role from a specific client.";
 }
 

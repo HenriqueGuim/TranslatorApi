@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static mindswap.academy.TranslatorApi.utils.UtilStrings.NOT_FOUND;
+import static mindswap.academy.TranslatorApi.utils.UtilStrings.ROLE_UPDATED;
+
 @Service
 public class ClientServiceImpl implements ClientService {
 
@@ -112,7 +115,7 @@ public class ClientServiceImpl implements ClientService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Client client = clientRepository.findByUsername(username);
         if (client == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException(NOT_FOUND);
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -126,10 +129,10 @@ public class ClientServiceImpl implements ClientService {
     public String updateRole(String username, Long role) {
         Client client = clientRepository.findByUsername(username);
         if (client == null) {
-            return "User not found";
+            return NOT_FOUND;
         }
         client.setRole(roleServiceImpl.getById(role));
         clientRepository.save(client);
-        return "Role updated";
+        return ROLE_UPDATED;
     }
 }
