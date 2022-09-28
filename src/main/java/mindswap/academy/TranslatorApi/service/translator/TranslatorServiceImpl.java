@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
 import mindswap.academy.TranslatorApi.service.client.ClientServiceImpl;
@@ -26,6 +27,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
 @Service
+@Slf4j
 public class TranslatorServiceImpl implements TranslatorService {
 
 
@@ -46,12 +48,15 @@ public class TranslatorServiceImpl implements TranslatorService {
     @Override
     public String getTranslator(String sourceLanguage, String trgLanguage, String text, HttpServletRequest request) throws JsonProcessingException, URISyntaxException {
         if (!Verifiers.isLanguageSupported(trgLanguage)){
+
+            log.error("Language not supported");
             return null;
         }
 
         String query = "?text=" + UriUtils.encode(text, UTF_8) + "&target_lang=" + trgLanguage;
         if (sourceLanguage != null){
             if (!Verifiers.isLanguageSupported(sourceLanguage)){
+                log.error("Language not supported");
                 return null;
             }
             query = "?text=" + UriUtils.encode(text, UTF_8) + "&target_lang=" + trgLanguage + "&source_lang=" + sourceLanguage;
@@ -76,6 +81,7 @@ public class TranslatorServiceImpl implements TranslatorService {
 
         executorService.submit(new SaveTranslation(client, language.asText(), trgLanguage, translation.asText()));
 
+        log.info("Translation: " + translation.asText());
 
         return "Translated from " + Verifiers.getLanguage(language.asText()) + " to " + Verifiers.getLanguage(trgLanguage) + " : " + translation.asText();
     }

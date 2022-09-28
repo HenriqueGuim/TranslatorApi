@@ -1,5 +1,6 @@
 package mindswap.academy.TranslatorApi.service.client;
 
+import lombok.extern.slf4j.Slf4j;
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
 import mindswap.academy.TranslatorApi.Repository.ClientRepositoryJpa;
@@ -18,6 +19,7 @@ import static mindswap.academy.TranslatorApi.utils.UtilStrings.NOT_FOUND;
 import static mindswap.academy.TranslatorApi.utils.UtilStrings.ROLE_UPDATED;
 
 @Service
+@Slf4j
 public class ClientServiceImpl implements ClientService {
 
 
@@ -35,6 +37,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public boolean addClient(Client client) {
         if (clientRepository.findByUsername(client.getUsername()) != null) {
+            log.error("Client already exists");
             return false;
         }
 
@@ -42,18 +45,23 @@ public class ClientServiceImpl implements ClientService {
         client.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
         Client client1 =clientRepository.save(client);
         roleServiceImpl.save(client1.getRole());
+        log.info("Client added");
         return true;
     }
 
 
     @Override
     public Client getClientByUsername(String username) {
+
+        log.info("Client found with username: " + username);
         return clientRepository.findByUsername(username);
     }
 
 
     @Override
     public List<Client> getAllClients() {
+
+        log.info("All clients found");
         return clientRepository.findAll();
     }
 
@@ -73,12 +81,14 @@ public class ClientServiceImpl implements ClientService {
             translations.get(srcLang).put(trgLang,counter);
             client.setTranslations(translations);
             clientRepository.save(client);
+            log.info("Translation added to language: " + srcLang + " to language: " + trgLang);
             return translations;
         }
         if(translations.containsKey(srcLang) && !translations.get(srcLang).containsKey(trgLang)){
             translations.get(srcLang).put(trgLang,1L);
             client.setTranslations(translations);
             clientRepository.save(client);
+            log.info("Translation added to language: " + srcLang + " to language: " + trgLang);
 
             return translations;
         }
@@ -90,6 +100,7 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
         Map<Languages, HashMap<Languages, Long>> map1 = clientRepository.findByUsername(client.getUsername()).getTranslations();
         client.getTranslationsWithText();
+        log.info("Translation added to language: " + srcLang + " to language: " + trgLang);
 
         return translations;
     }
@@ -103,12 +114,14 @@ public class ClientServiceImpl implements ClientService {
             translationsWithText.offer(translationWithText);
             client.setTranslationsWithText(translationsWithText);
             clientRepository.save(client);
+            log.info("Translation with text added to client: " + client.getUsername());
             return;
         }
 
         translationsWithText.offer(translationWithText);
         client.setTranslationsWithText(translationsWithText);
         clientRepository.save(client);
+        log.info("Translation with text added to client: " + client.getUsername());
     }
 
     @Override
@@ -129,10 +142,14 @@ public class ClientServiceImpl implements ClientService {
     public String updateRole(String username, Long role) {
         Client client = clientRepository.findByUsername(username);
         if (client == null) {
+
+            log.error("Client not found");
             return NOT_FOUND;
         }
         client.setRole(roleServiceImpl.getById(role));
         clientRepository.save(client);
+
+        log.info("Role updated");
         return ROLE_UPDATED;
     }
 }

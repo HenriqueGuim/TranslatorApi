@@ -1,0 +1,25 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysqldb
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=TranslatorApi
+    volumes:
+      - ./sql-dump:/docker-entrypoint-initdb.d
+    command: '--default-authentication-plugin=mysql_native_password'
+
+  aservice:
+    image: security:latest
+    ports:
+      - "8080:8080"
+    # Allow docker to connect to localhost
+
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=TranslatorApi
+      - MYSQL_HOST=mysqldb

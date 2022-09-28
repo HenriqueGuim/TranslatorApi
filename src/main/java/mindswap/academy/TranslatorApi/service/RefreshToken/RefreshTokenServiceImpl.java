@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.service.client.ClientServiceImpl;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.*;
 import static com.auth0.jwt.JWT.require;
 
 @Service
+@Slf4j
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final ClientServiceImpl clientServiceImpl;
@@ -68,8 +70,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 Map<String, String> error = Map.of("error_message", exception.getMessage());
                 response.setContentType("application/json");
                 new ObjectMapper().writeValue(response.getOutputStream(), error);
+                log.error("Error logging in: {}", exception.getMessage());
             }
+            log.info("Refresh token attributed");
         } else {
+            log.error("Error logging in: {}", "Refresh token not found");
             throw new RuntimeException("Refresh token is missing");
         }
     }

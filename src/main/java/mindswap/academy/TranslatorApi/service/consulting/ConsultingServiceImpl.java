@@ -2,6 +2,7 @@ package mindswap.academy.TranslatorApi.service.consulting;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.extern.slf4j.Slf4j;
 import mindswap.academy.TranslatorApi.Models.Client;
 import mindswap.academy.TranslatorApi.Models.TranslationWithText;
 import mindswap.academy.TranslatorApi.service.client.ClientServiceImpl;
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
+@Slf4j
 public class ConsultingServiceImpl implements ConsultingService {
     private final ClientServiceImpl clientServiceImpl;
 
@@ -38,6 +40,8 @@ public class ConsultingServiceImpl implements ConsultingService {
 
         });
 
+        log.info("Source languages of all clients retrieved");
+
         return srcLanguages;
     }
 
@@ -54,6 +58,8 @@ public class ConsultingServiceImpl implements ConsultingService {
                 });
             });
         });
+
+        log.info("Target languages of all clients retrieved");
         return trgLanguages;
     }
 
@@ -78,6 +84,7 @@ public class ConsultingServiceImpl implements ConsultingService {
         });
 
 
+        log.info("Source languages of client: " + usernameFromToken + " retrieved");
         return map;
     }
 
@@ -96,6 +103,8 @@ public class ConsultingServiceImpl implements ConsultingService {
         client.getTranslations().forEach((language, languageMap)->{
             map.putAll(languageMap);
         });
+
+        log.info("Target languages of client: " + usernameFromToken + " retrieved");
         return map;
     }
 
@@ -104,6 +113,8 @@ public class ConsultingServiceImpl implements ConsultingService {
         DecodedJWT jwt = JWT.decode(request.getHeader("Authorization").substring(7));
         String usernameFromToken = jwt.getSubject();
         Client client = clientServiceImpl.getClientByUsername(usernameFromToken);
+
+        log.info("Last translations of client: " + usernameFromToken + " retrieved");
 
         return client.getTranslationsWithText();
     }

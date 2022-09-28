@@ -1,5 +1,6 @@
 package mindswap.academy.TranslatorApi.service.role;
 
+import lombok.extern.slf4j.Slf4j;
 import mindswap.academy.TranslatorApi.Models.Role;
 import mindswap.academy.TranslatorApi.Repository.RoleRepositoryJpa;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepositoryJpa roleRepository;
