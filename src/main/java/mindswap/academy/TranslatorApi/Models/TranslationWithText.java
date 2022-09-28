@@ -1,6 +1,5 @@
 package mindswap.academy.TranslatorApi.Models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import mindswap.academy.TranslatorApi.utils.enums.Languages;
 

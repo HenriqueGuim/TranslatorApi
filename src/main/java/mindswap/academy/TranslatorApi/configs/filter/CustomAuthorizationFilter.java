@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.auth0.jwt.JWT.require;
-import static java.util.Arrays.stream;
+
 
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
